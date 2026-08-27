@@ -1,11 +1,11 @@
 # Land Cover Classification & Accuracy Assessment
-Saloni Mittal, Shreya Gupta, Ashwani Singh, Ayush Dixit
+
 
 ## Overview
 This project implements **land cover classification** using Sentinel-2 satellite imagery, with an emphasis on **accuracy analysis procedures** such as **Overall Accuracy**, **User’s Accuracy**, **Producer’s Accuracy**, **Kappa Coefficient**, and **Tau Statistic**.  
 The methodology leverages a **Random Forest classifier** with **window-based feature extraction**, providing a user-friendly **Gradio interface** for interactive classification, accuracy assessment, and results export.
 
-Developed as part of **CE672: Machine Processing of Remotely Sensed Data** at *Indian Institute of Technology Kanpur* (2024–25).
+
 
 ---
 
