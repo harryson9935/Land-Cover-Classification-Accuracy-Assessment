@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Land Cover Classification — Accuracy Assessment Report</title>
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; margin: 40px; color: #222; background:#fafafa;}
+  h1 { color: #2c5530; border-bottom: 3px solid #397D49; padding-bottom: 8px;}
+  h2 { color: #2c5530; margin-top: 40px; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; background: white;}
+  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: center; }
+  th { background-color: #397D49; color: white; }
+  tr:nth-child(even) { background-color: #f2f6f2; }
+  .metric-cards { display: flex; gap: 16px; flex-wrap: wrap; margin: 20px 0; }
+  .card { background: white; border-left: 5px solid #397D49; padding: 16px 24px; border-radius: 6px;
+           box-shadow: 0 1px 4px rgba(0,0,0,0.08); min-width: 180px;}
+  .card .value { font-size: 28px; font-weight: bold; color: #2c5530; }
+  .card .label { font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 0.03em;}
+  img { max-width: 100%; border: 1px solid #ddd; border-radius: 6px; margin: 10px 0; }
+  .imgrow { display:flex; gap:16px; flex-wrap:wrap; }
+  .imgrow figure { flex: 1; min-width: 260px; margin:0;}
+  figcaption { font-size: 13px; color:#555; text-align:center; margin-top:4px;}
+  .note { background:#fff8e1; border-left:5px solid #E49635; padding:12px 18px; border-radius:6px; font-size:14px;}
+  footer { margin-top:50px; font-size:12px; color:#888; }
+</style>
+</head>
+<body>
+<h1>Land Cover Classification — Accuracy Assessment Report</h1>
+<p>Sentinel-2 multispectral imagery &middot; Dynamic World 9-class schema &middot; Random Forest, window-based spectral-spatial features</p>
+
+<div class="note"><strong>Data note:</strong> this run uses a synthetically generated Sentinel-2 / Dynamic-World-style
+scene (see <code>src/data_generator.py</code>) because this environment has no internet access to pull real
+imagery from Google Earth Engine. Swap in real Sentinel-2 + Dynamic World rasters and the rest of the pipeline
+runs unchanged.</div>
+
+<h2>Best Configuration</h2>
+<div class="metric-cards">
+  <div class="card"><div class="value">91.52%</div><div class="label">Overall Accuracy</div></div>
+  <div class="card"><div class="value">0.905</div><div class="label">Kappa Coefficient</div></div>
+  <div class="card"><div class="value">0.916</div><div class="label">Macro F1</div></div>
+  <div class="card"><div class="value">window=5</div><div class="label">Best Window Size</div></div>
+  <div class="card"><div class="value">stratified</div><div class="label">Sampling Strategy</div></div>
+</div>
+
+<h2>Per-Class Accuracy</h2>
+<table>
+<tr><th>Class</th><th>Support (test px)</th><th>Producer's Accuracy</th><th>User's Accuracy</th><th>F1 Score</th></tr>
+<tr><td>water</td><td>240</td><td>100.00%</td><td>97.56%</td><td>0.988</td></tr>
+<tr><td>trees</td><td>240</td><td>93.33%</td><td>96.55%</td><td>0.949</td></tr>
+<tr><td>grass</td><td>240</td><td>77.08%</td><td>74.90%</td><td>0.760</td></tr>
+<tr><td>flooded_vegetation</td><td>240</td><td>93.33%</td><td>95.32%</td><td>0.943</td></tr>
+<tr><td>crops</td><td>240</td><td>79.17%</td><td>81.20%</td><td>0.802</td></tr>
+<tr><td>shrub_and_scrub</td><td>240</td><td>90.42%</td><td>86.45%</td><td>0.884</td></tr>
+<tr><td>built</td><td>240</td><td>94.17%</td><td>95.36%</td><td>0.948</td></tr>
+<tr><td>bare</td><td>240</td><td>96.67%</td><td>97.48%</td><td>0.971</td></tr>
+<tr><td>snow_and_ice</td><td>226</td><td>100.00%</td><td>100.00%</td><td>1.000</td></tr>
+</table>
+
+<h2>Window Size &times; Sampling Strategy Comparison</h2>
+<table>
+<tr><th>Window Size</th><th>Sampling</th><th>#Features</th><th>OA (%)</th><th>Kappa</th><th>Macro F1</th><th>Train Time (s)</th></tr>
+<tr><td>5</td><td>stratified</td><td>40</td><td>91.52</td><td>0.905</td><td>0.916</td><td>6.24</td></tr>
+<tr><td>5</td><td>random</td><td>40</td><td>89.86</td><td>0.881</td><td>0.917</td><td>6.71</td></tr>
+<tr><td>3</td><td>stratified</td><td>40</td><td>87.56</td><td>0.86</td><td>0.876</td><td>6.8</td></tr>
+<tr><td>3</td><td>random</td><td>40</td><td>84.21</td><td>0.814</td><td>0.864</td><td>7.42</td></tr>
+<tr><td>1</td><td>stratified</td><td>8</td><td>62.12</td><td>0.574</td><td>0.622</td><td>3.27</td></tr>
+<tr><td>1</td><td>random</td><td>8</td><td>60.28</td><td>0.532</td><td>0.62</td><td>3.68</td></tr>
+</table>
+
+<h2>Visual Results</h2>
+<div class="imgrow">
+  <figure><img src="images/01_rgb_composite.png"><figcaption>Sentinel-2-style RGB composite</figcaption></figure>
+  <figure><img src="images/02_ground_truth_map.png"><figcaption>Ground truth (Dynamic World labels)</figcaption></figure>
+  <figure><img src="images/03_classified_map.png"><figcaption>RF classified map (best configuration)</figcaption></figure>
+</div>
+<div class="imgrow">
+  <figure><img src="images/04_confusion_matrix.png"><figcaption>Confusion matrix (row-normalized)</figcaption></figure>
+  <figure><img src="images/05_feature_importance.png"><figcaption>Top feature importances</figcaption></figure>
+  <figure><img src="images/06_comparison_chart.png"><figcaption>Accuracy vs. window size / sampling strategy</figcaption></figure>
+</div>
+
+<footer>Generated automatically by report.py — Land Cover Classification &amp; Accuracy Assessment pipeline.</footer>
+</body>
+</html>
